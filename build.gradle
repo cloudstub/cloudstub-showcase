@@ -1,0 +1,65 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '4.0.6'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'io.cloudstub.showcase'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    awsSdkVersion = '2.25.70'
+    cloudstubVersion = '0.1.0-beta.4'
+}
+
+// WireMock 3.13.1 (pulled transitively by cloudstub-core) requires Jetty 11; Spring Boot 4 manages
+// Jetty 12, which WireMock rejects at startup. Pin Jetty to 11. The application serves over Tomcat,
+// so its Jetty version is otherwise irrelevant.
+configurations.all {
+    resolutionStrategy.eachDependency { details ->
+        if (details.requested.group == 'org.eclipse.jetty') {
+            details.useVersion '11.0.24'
+        }
+    }
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "software.amazon.awssdk:bom:${awsSdkVersion}"
+    }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    implementation 'software.amazon.awssdk:s3'
+    implementation 'software.amazon.awssdk:sqs'
+    implementation 'software.amazon.awssdk:secretsmanager'
+
+    runtimeOnly 'org.postgresql:postgresql'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'com.h2database:h2'
+
+    // CloudStub is a test-only dependency, consumed from published Maven artifacts.
+    // cloudstub-testing aggregates cloudstub-core + cloudstub-junit (CloudStubExtension).
+    testImplementation "io.github.cloudstub:cloudstub-testing:${cloudstubVersion}"
+    testImplementation "io.github.cloudstub:cloudstub-s3:${cloudstubVersion}"
+    testImplementation "io.github.cloudstub:cloudstub-sqs:${cloudstubVersion}"
+    testImplementation "io.github.cloudstub:cloudstub-secretsmanager:${cloudstubVersion}"
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}

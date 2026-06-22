@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: cloudstub-showcase
+  datasource:
+    url: jdbc:postgresql://localhost:5432/showcase
+    driver-class-name: org.postgresql.Driver
+    # username/password are not configured here: they are read from Secrets Manager
+    # (see DataSourceConfig / DatabaseCredentialsProvider).
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  servlet:
+    multipart:
+      max-file-size: 25MB
+      max-request-size: 25MB
+
+aws:
+  # Redirected to CloudStub in tests via the aws.endpoint-url system property. Empty in production,
+  # so the AWS SDK uses real AWS endpoints. No other CloudStub-specific configuration exists.
+  endpoint-url: ${AWS_ENDPOINT_URL:}
+  region: ${AWS_REGION:us-east-1}
+
+showcase:
+  s3-bucket: sales-reports
+  sqs-queue: report-ingestion
+  db-secret-name: showcase/db-credentials
+  ingestion:
+    poll-interval-ms: 2000
