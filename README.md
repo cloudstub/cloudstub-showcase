@@ -1,7 +1,7 @@
 # cloudstub-showcase
 
 A sales report ingestion service that demonstrates using CloudStub to test an application written
-against real AWS, with no local AWS infrastructure.
+against AWS.
 
 ## Domain
 
