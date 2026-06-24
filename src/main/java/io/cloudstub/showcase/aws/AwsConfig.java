@@ -4,7 +4,6 @@ import java.net.URI;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import software.amazon.awssdk.auth.credentials.AnonymousCredentialsProvider;
 import software.amazon.awssdk.awscore.client.builder.AwsClientBuilder;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -42,7 +41,7 @@ public class AwsConfig {
     }
 
     private <C, B extends AwsClientBuilder<B, C>> B configure(B builder) {
-        builder.region(Region.of(region)).credentialsProvider(AnonymousCredentialsProvider.create());
+        builder.region(Region.of(region));
         if (!endpointUrl.isBlank()) {
             builder.endpointOverride(URI.create(endpointUrl));
         }
