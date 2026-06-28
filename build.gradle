@@ -28,18 +28,7 @@ repositories {
 
 ext {
     awsSdkVersion = '2.25.70'
-    cloudstubVersion = '0.1.0-beta.5'
-}
-
-// WireMock 3.13.1 (pulled transitively by cloudstub-core) requires Jetty 11; Spring Boot 4 manages
-// Jetty 12, which WireMock rejects at startup. Pin Jetty to 11. The application serves over Tomcat,
-// so its Jetty version is otherwise irrelevant.
-configurations.all {
-    resolutionStrategy.eachDependency { details ->
-        if (details.requested.group == 'org.eclipse.jetty') {
-            details.useVersion '11.0.24'
-        }
-    }
+    cloudstubVersion = '0.1.0-beta.6'
 }
 
 dependencyManagement {
